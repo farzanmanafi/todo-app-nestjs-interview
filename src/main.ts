@@ -10,6 +10,13 @@ async function bootstrap() {
   const app = await NestFactory.create(AppModule);
 
   const configService = app.get(ConfigService);
+  const port = configService.get<number>('PORT', 3000);
+  const apiPrefix = configService.get<string>('API_PREFIX', 'api/v1');
+  const swaggerEnabled = configService.get<boolean>('SWAGGER_ENABLED', true);
+  const nodeEnv = configService.get<string>('NODE_ENV', 'development');
+
+  // Set global prefix BEFORE Swagger setup so documentation reflects the prefix
+  app.setGlobalPrefix(apiPrefix);
 
   // CORS configuration
   const corsEnabled = configService.get<boolean>('CORS_ENABLED', true);
@@ -44,7 +51,6 @@ async function bootstrap() {
   );
 
   // Swagger documentation
-  const swaggerEnabled = configService.get<boolean>('SWAGGER_ENABLED', true);
   if (swaggerEnabled) {
     const swaggerConfig = new DocumentBuilder()
       .setTitle(configService.get<string>('SWAGGER_TITLE', 'Scalable Todo API'))
@@ -73,8 +79,10 @@ async function bootstrap() {
       .addTag('Notifications', 'Notification management')
       .build();
 
+    // The document is created *after* the global prefix is set
     const document = SwaggerModule.createDocument(app, swaggerConfig);
-    // Setup Swagger at root level (not affected by global prefix)
+
+    // Setup Swagger at a specific path (not affected by global prefix)
     SwaggerModule.setup('api-docs', app, document, {
       swaggerOptions: {
         persistAuthorization: true,
@@ -86,14 +94,9 @@ async function bootstrap() {
     });
 
     logger.log(
-      `📚 Swagger documentation available at: http://localhost:${configService.get<number>('PORT', 3000)}/api-docs`,
+      `📚 Swagger documentation available at: http://localhost:${port}/api-docs`,
     );
   }
-
-  // Set global prefix AFTER Swagger setup
-  const apiPrefix = configService.get<string>('API_PREFIX', 'api/v1');
-  const port = configService.get<number>('PORT', 3000);
-  const nodeEnv = configService.get<string>('NODE_ENV', 'development');
 
   await app.listen(port);
 

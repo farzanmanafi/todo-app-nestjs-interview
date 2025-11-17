@@ -8,13 +8,20 @@ import {
   Delete,
   UseGuards,
 } from '@nestjs/common';
-import { ApiTags, ApiOperation, ApiBearerAuth } from '@nestjs/swagger';
+import { ApiTags, ApiBearerAuth } from '@nestjs/swagger';
 import { UsersService } from './users.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 import { User } from './entities/user.entity';
-import { GetUser } from '@domain/auth/decorators/get-user.decorator';
+import { GetUser } from '../auth/decorators/get-user.decorator';
+import { CreateUserDec } from './decorators/create-user.decorator';
+import { FindAllUsersDec } from './decorators/find-all-users.decorator';
+import { GetProfileDec } from '@domain/auth/decorators/get-profile.decorator';
+import { FindOneUserDec } from './decorators/find-one-user.decorator';
+import { UpdateUserDec } from './decorators/update-user.decorator';
+import { RemoveUserDec } from './decorators/remove-user.decorator';
+import { Public } from '@domain/auth/decorators/public.decorator';
 
 @ApiTags('Users')
 @Controller('users')
@@ -23,38 +30,39 @@ import { GetUser } from '@domain/auth/decorators/get-user.decorator';
 export class UsersController {
   constructor(private readonly usersService: UsersService) {}
 
+  @Public()
   @Post()
-  @ApiOperation({ summary: 'Create user' })
-  create(@Body() createUserDto: CreateUserDto) {
-    return this.usersService.create(createUserDto);
+  @CreateUserDec()
+  create(@Body() dto: CreateUserDto) {
+    return this.usersService.create(dto);
   }
 
   @Get()
-  @ApiOperation({ summary: 'Get all users' })
+  @FindAllUsersDec()
   findAll() {
     return this.usersService.findAll();
   }
 
   @Get('me')
-  @ApiOperation({ summary: 'Get current user profile' })
+  @GetProfileDec()
   getProfile(@GetUser() user: User) {
     return this.usersService.findOne(user.id);
   }
 
   @Get(':id')
-  @ApiOperation({ summary: 'Get user by ID' })
+  @FindOneUserDec()
   findOne(@Param('id') id: string) {
     return this.usersService.findOne(id);
   }
 
   @Patch(':id')
-  @ApiOperation({ summary: 'Update user' })
-  update(@Param('id') id: string, @Body() updateUserDto: UpdateUserDto) {
-    return this.usersService.update(id, updateUserDto);
+  @UpdateUserDec()
+  update(@Param('id') id: string, @Body() dto: UpdateUserDto) {
+    return this.usersService.update(id, dto);
   }
 
   @Delete(':id')
-  @ApiOperation({ summary: 'Delete user' })
+  @RemoveUserDec()
   remove(@Param('id') id: string) {
     return this.usersService.remove(id);
   }
