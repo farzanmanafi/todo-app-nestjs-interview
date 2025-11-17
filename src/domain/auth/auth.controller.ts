@@ -3,21 +3,20 @@ import {
   Post,
   Body,
   Get,
-  Query,
   UseGuards,
-  Req,
-  Res,
+  HttpCode,
+  HttpStatus,
 } from '@nestjs/common';
-import { AuthGuard } from '@nestjs/passport';
-import { Response, Request } from 'express';
-import { ApiTags, ApiOperation, ApiBearerAuth } from '@nestjs/swagger';
+import {
+  ApiTags,
+  ApiOperation,
+  ApiBearerAuth,
+  ApiOkResponse,
+} from '@nestjs/swagger';
 
 import { AuthService } from './auth.service';
 import { SignUpDto } from './dto/signup.dto';
 import { SignInDto } from './dto/signin.dto';
-import { ForgotPasswordDto } from './dto/forgot-password.dto';
-import { ResetPasswordDto } from './dto/reset-password.dto';
-import { VerifyTwoFactorDto } from './dto/verify-two-factor.dto';
 import { RefreshTokenDto } from './dto/refresh-token.dto';
 import { JwtAuthGuard } from './guards/jwt-auth.guard';
 import { User } from '../users/entities/user.entity';
@@ -25,6 +24,8 @@ import { SignUpDec } from './decorators/signup.decorator';
 import { SigninDec } from './decorators/signin.decorator';
 import { RefreshDec } from './decorators/refresh-token.decorator';
 import { GetUser } from './decorators/get-user.decorator';
+import { LogoutDec } from './decorators/logout.decorator';
+import { GetProfileDec } from './decorators/get-profile.decorator';
 
 @ApiTags('Authentication')
 @Controller('auth')
@@ -49,10 +50,15 @@ export class AuthController {
     return this.authService.refreshToken(refreshTokenDto.refreshToken);
   }
 
+  @Post('logout')
+  @LogoutDec()
+  async logout(@Body() refreshTokenDto: RefreshTokenDto) {
+    return this.authService.logout(refreshTokenDto.refreshToken);
+  }
+
   @Get('profile')
-  @ApiOperation({ summary: 'Get user profile' })
   @UseGuards(JwtAuthGuard)
-  @ApiBearerAuth()
+  @GetProfileDec()
   async getProfile(@GetUser() user: User) {
     return this.authService.getProfile(user.id);
   }

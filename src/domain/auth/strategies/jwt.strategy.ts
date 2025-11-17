@@ -17,8 +17,7 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
       // 2. Don't accept expired tokens
       ignoreExpiration: false,
       // 3. Secret key to verify signature
-      secretOrKey:
-        configService.get('jwt.secret') || configService.get('JWT_SECRET'),
+      secretOrKey: configService.get('JWT_SECRET'),
     });
   }
 

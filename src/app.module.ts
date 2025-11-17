@@ -9,9 +9,9 @@ import { EventEmitterModule } from '@nestjs/event-emitter';
 import { redisStore } from 'cache-manager-redis-yet';
 import type { RedisClientOptions } from 'redis';
 
-// Module imports will be added as we create them
-// import { AuthModule } from './infrastructure/auth/auth.module';
-// import { UserModule } from './domain/user/user.module';
+// Module imports
+import { AuthModule } from './domain/auth/auth.module';
+import { UsersModule } from './domain/users/users.module';
 // import { CategoryModule } from './domain/category/category.module';
 // import { TodoModule } from './domain/todo/todo.module';
 
@@ -29,16 +29,16 @@ import type { RedisClientOptions } from 'redis';
       inject: [ConfigService],
       useFactory: (configService: ConfigService) => ({
         type: 'postgres',
-        host: configService.get('DB_HOST'),
-        port: configService.get('DB_PORT'),
-        username: configService.get('DB_USERNAME'),
-        password: configService.get('DB_PASSWORD'),
-        database: configService.get('DB_DATABASE'),
+        host: configService.get('DB_HOST', 'localhost'),
+        port: configService.get('DB_PORT', 5432),
+        username: configService.get('DB_USERNAME', 'postgres'),
+        password: configService.get('DB_PASSWORD', 'postgres'),
+        database: configService.get('DB_DATABASE', 'todo_db'),
         entities: [__dirname + '/**/*.entity{.ts,.js}'],
         migrations: [
           __dirname + '/infrastructure/persistence/migrations/*{.ts,.js}',
         ],
-        synchronize: configService.get('DB_SYNCHRONIZE', false),
+        synchronize: configService.get('DB_SYNCHRONIZE', true), // Set to false in production
         logging: configService.get('DB_LOGGING', false),
         ssl:
           configService.get('NODE_ENV') === 'production'
@@ -55,8 +55,8 @@ import type { RedisClientOptions } from 'redis';
       useFactory: async (configService: ConfigService) => ({
         store: await redisStore({
           socket: {
-            host: configService.get('REDIS_HOST'),
-            port: configService.get('REDIS_PORT'),
+            host: configService.get('REDIS_HOST', 'localhost'),
+            port: configService.get('REDIS_PORT', 6379),
           },
           password: configService.get('REDIS_PASSWORD'),
           ttl: configService.get('REDIS_TTL', 3600) * 1000,
@@ -70,8 +70,8 @@ import type { RedisClientOptions } from 'redis';
       inject: [ConfigService],
       useFactory: (configService: ConfigService) => ({
         redis: {
-          host: configService.get('REDIS_HOST'),
-          port: configService.get('REDIS_PORT'),
+          host: configService.get('REDIS_HOST', 'localhost'),
+          port: configService.get('REDIS_PORT', 6379),
           password: configService.get('REDIS_PASSWORD'),
         },
         prefix: configService.get('BULL_QUEUE_PREFIX', 'todo'),
@@ -105,9 +105,9 @@ import type { RedisClientOptions } from 'redis';
     // Event Emitter
     EventEmitterModule.forRoot(),
 
-    // Domain Modules (will be uncommented as we create them)
-    // AuthModule,
-    // UserModule,
+    // Domain Modules
+    AuthModule,
+    UsersModule,
     // CategoryModule,
     // TodoModule,
   ],
