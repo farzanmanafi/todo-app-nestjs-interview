@@ -3,25 +3,25 @@ import {
   ApiOperation,
   ApiOkResponse,
   ApiUnauthorizedResponse,
+  ApiBearerAuth,
 } from '@nestjs/swagger';
-
-import { UserResponseDto } from '../dto/user-response.dto';
-
+import { UserResponseDto } from '@domain/users/dto/user-response.dto';
 import { UnauthorizedExceptionDto } from '@domain/shared/dto/unauthorized-Exception.dto';
 
-export const GetProfileDec = (): MethodDecorator => {
+export function GetProfileDec() {
   return applyDecorators(
     ApiOperation({
       summary: 'Get current user profile',
-      description: 'Returns the authenticated user’s profile.',
+      description: 'Retrieve the profile information of the authenticated user',
     }),
+    ApiBearerAuth('JWT-auth'),
     ApiOkResponse({
-      description: 'Current user profile',
+      description: 'User profile retrieved successfully',
       type: UserResponseDto,
     }),
     ApiUnauthorizedResponse({
-      description: 'Unauthorized',
+      description: 'Unauthorized. Invalid or missing token.',
       type: UnauthorizedExceptionDto,
     }),
   );
-};
+}

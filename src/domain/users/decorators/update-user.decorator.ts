@@ -7,6 +7,8 @@ import {
   ApiUnauthorizedResponse,
   ApiBadRequestResponse,
   ApiBody,
+  ApiParam,
+  ApiBearerAuth,
 } from '@nestjs/swagger';
 
 import { UpdateUserDto } from '../dto/update-user.dto';
@@ -21,27 +23,61 @@ export const UpdateUserDec = (): MethodDecorator => {
   return applyDecorators(
     ApiOperation({
       summary: 'Update user by ID',
-      description: 'Updates an existing user.',
+      description:
+        'Updates an existing user account with new information. Email uniqueness is validated if email is being changed. Requires authentication.',
     }),
-    ApiBody({ type: UpdateUserDto }),
+    ApiBearerAuth('JWT-auth'),
+    ApiParam({
+      name: 'id',
+      description: 'Unique user identifier (UUID)',
+      example: '550e8400-e29b-41d4-a716-446655440000',
+      type: String,
+    }),
+    ApiBody({
+      description: 'Updated user details (all fields are optional)',
+      type: UpdateUserDto,
+      examples: {
+        updateEmail: {
+          summary: 'Update email only',
+          value: {
+            email: 'newemail@example.com',
+          },
+        },
+        updateName: {
+          summary: 'Update name only',
+          value: {
+            firstName: 'Jane',
+            lastName: 'Smith',
+          },
+        },
+        updateMultiple: {
+          summary: 'Update multiple fields',
+          value: {
+            email: 'updated@example.com',
+            firstName: 'Jane',
+            lastName: 'Smith',
+          },
+        },
+      },
+    }),
     ApiOkResponse({
       description: 'User updated successfully',
       type: UserResponseDto,
     }),
     ApiBadRequestResponse({
-      description: 'Invalid update data',
+      description: 'Invalid update data or validation failed',
       type: BadRequestDto,
     }),
     ApiConflictResponse({
-      description: 'Email already in use',
+      description: 'Email is already in use by another user',
       type: ConflictExceptionDto,
     }),
     ApiNotFoundResponse({
-      description: 'User not found',
+      description: 'User with the specified ID was not found',
       type: NotFoundExceptionDto,
     }),
     ApiUnauthorizedResponse({
-      description: 'Unauthorized',
+      description: 'Unauthorized. Invalid or missing authentication token.',
       type: UnauthorizedExceptionDto,
     }),
   );

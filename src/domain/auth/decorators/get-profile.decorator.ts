@@ -7,7 +7,6 @@ import {
 } from '@nestjs/swagger';
 import { UserResponseDto } from '@domain/users/dto/user-response.dto';
 import { UnauthorizedExceptionDto } from '@domain/shared/dto/unauthorized-Exception.dto';
-import { JwtAuthGuard } from '../guards/jwt-auth.guard';
 
 export function GetProfileDec() {
   return applyDecorators(
@@ -15,7 +14,7 @@ export function GetProfileDec() {
       summary: 'Get current user profile',
       description: 'Retrieve the profile information of the authenticated user',
     }),
-    ApiBearerAuth(),
+    ApiBearerAuth('JWT-auth'),
     ApiOkResponse({
       description: 'User profile retrieved successfully',
       type: UserResponseDto,

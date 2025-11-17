@@ -1,36 +1,38 @@
-import { applyDecorators } from '@nestjs/common';
+import { applyDecorators, HttpCode, HttpStatus } from '@nestjs/common';
 import {
   ApiOperation,
   ApiBody,
-  ApiCreatedResponse,
+  ApiOkResponse,
   ApiBadRequestResponse,
-  ApiConflictResponse,
   ApiUnauthorizedResponse,
 } from '@nestjs/swagger';
 import { SignInDto } from '../dto/signin.dto';
 import { TokenResponseDto } from '../dto/token-response.dto';
 import { BadRequestDto } from '@domain/shared/dto/bad-request.dto';
 import { UnauthorizedExceptionDto } from '@domain/shared/dto/unauthorized-Exception.dto';
+
 export const SigninDec = (): MethodDecorator => {
   return applyDecorators(
+    HttpCode(HttpStatus.OK),
     ApiOperation({
-      summary: 'Sign in',
-      description: 'Sign in and get an access token',
+      summary: 'Sign in user',
+      description:
+        'Authenticate user with email and password, returns access and refresh tokens',
     }),
     ApiBody({
-      description: 'User credentials',
+      description: 'User credentials for authentication',
       type: SignInDto,
     }),
-    ApiCreatedResponse({
-      description: 'Signed in successfully',
+    ApiOkResponse({
+      description: 'User signed in successfully',
       type: TokenResponseDto,
     }),
     ApiBadRequestResponse({
-      description: 'Invalid request',
+      description: 'Invalid request body or validation failed',
       type: BadRequestDto,
     }),
     ApiUnauthorizedResponse({
-      description: 'Invalid credentials',
+      description: 'Invalid email or password',
       type: UnauthorizedExceptionDto,
     }),
   );
