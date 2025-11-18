@@ -30,7 +30,7 @@ import { Public } from '@domain/auth/decorators/public.decorator';
 export class UsersController {
   constructor(private readonly usersService: UsersService) {}
 
-  @Public()
+  // @Public()
   @Post()
   @CreateUserDec()
   create(@Body() dto: CreateUserDto) {

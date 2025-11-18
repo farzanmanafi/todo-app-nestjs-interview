@@ -11,7 +11,7 @@ import {
   Index,
 } from 'typeorm';
 import { User } from '../../users/entities/user.entity';
-// import { Todo } from '../../todo/entities/todo.entity';
+import { Todo } from '../../todo/entities/todo.entity';
 
 @Entity('categories')
 export class Category {
@@ -49,6 +49,6 @@ export class Category {
   @JoinColumn({ name: 'userId' })
   user: User;
 
-  // @OneToMany(() => Todo, (todo) => todo.category)
-  // todos: Todo[];
+  @OneToMany(() => Todo, (todo) => todo.category)
+  todos: Todo[];
 }
