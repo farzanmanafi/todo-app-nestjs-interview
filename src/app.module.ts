@@ -13,7 +13,9 @@ import type { RedisClientOptions } from 'redis';
 import { AuthModule } from './domain/auth/auth.module';
 import { UsersModule } from './domain/users/users.module';
 import { CategoryModule } from './domain/category/category.module';
-// import { TodoModule } from './domain/todo/todo.module';
+import { TodoModule } from './domain/todo/todo.module';
+import { NotificationModule } from './domain/notification/notification.module';
+import { QueueModule } from './infrastructure/queue/queue.module';
 
 @Module({
   imports: [
@@ -109,7 +111,11 @@ import { CategoryModule } from './domain/category/category.module';
     AuthModule,
     UsersModule,
     CategoryModule,
-    // TodoModule,
+    TodoModule,
+    NotificationModule,
+
+    // Infrastructure Modules
+    QueueModule,
   ],
   controllers: [],
   providers: [],
