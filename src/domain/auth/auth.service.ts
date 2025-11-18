@@ -2,7 +2,6 @@ import {
   Injectable,
   UnauthorizedException,
   ConflictException,
-  BadRequestException,
   NotFoundException,
   Logger,
 } from '@nestjs/common';
@@ -15,7 +14,6 @@ import { v4 as uuid } from 'uuid';
 
 import { User } from '../users/entities/user.entity';
 import { RefreshToken } from './entities/refresh-token.entity';
-import { PasswordReset } from './entities/password-reset.entity';
 import { SignUpDto } from './dto/signup.dto';
 import { SignInDto } from './dto/signin.dto';
 import {
@@ -33,11 +31,8 @@ export class AuthService {
     private readonly userRepository: Repository<User>,
     @InjectRepository(RefreshToken)
     private readonly refreshTokenRepository: Repository<RefreshToken>,
-    @InjectRepository(PasswordReset)
-    private readonly passwordResetRepository: Repository<PasswordReset>,
     private readonly jwtService: JwtService,
     private readonly configService: ConfigService,
-    private readonly dataSource: DataSource,
   ) {}
 
   /**

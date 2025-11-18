@@ -1,7 +1,3 @@
-
-// ==============================================
-// FILE: src/common/middleware/rate-limit.middleware.ts
-// ==============================================
 import { Injectable, NestMiddleware, HttpStatus } from '@nestjs/common';
 import { Request, Response, NextFunction } from 'express';
 import { ConfigService } from '@nestjs/config';
@@ -27,7 +23,7 @@ export class RateLimitMiddleware implements NestMiddleware {
   use(req: Request, res: Response, next: NextFunction): void {
     const key = this.generateKey(req);
     const now = Date.now();
-    
+
     // Clean expired entries
     this.cleanExpiredEntries(now);
 
@@ -47,7 +43,10 @@ export class RateLimitMiddleware implements NestMiddleware {
     // Set rate limit headers
     res.set({
       'X-RateLimit-Limit': this.maxRequests.toString(),
-      'X-RateLimit-Remaining': Math.max(0, this.maxRequests - entry.requests).toString(),
+      'X-RateLimit-Remaining': Math.max(
+        0,
+        this.maxRequests - entry.requests,
+      ).toString(),
       'X-RateLimit-Reset': Math.ceil(entry.resetTime / 1000).toString(),
     });
 
@@ -73,7 +72,7 @@ export class RateLimitMiddleware implements NestMiddleware {
   }
 
   private cleanExpiredEntries(now: number): void {
-    Object.keys(this.store).forEach(key => {
+    Object.keys(this.store).forEach((key) => {
       if (now > this.store[key].resetTime) {
         delete this.store[key];
       }

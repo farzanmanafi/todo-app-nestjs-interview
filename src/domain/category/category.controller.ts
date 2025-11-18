@@ -15,13 +15,11 @@ import { UpdateCategoryDto } from './dto/update-category.dto';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 import { GetUser } from '../auth/decorators/get-user.decorator';
 import { User } from '../users/entities/user.entity';
-// import {
-//   CreateCategoryDec,
-//   FindAllCategoriesDec,
-//   FindOneCategoryDec,
-//   UpdateCategoryDec,
-//   RemoveCategoryDec,
-// } from './decorators/category.decorators';
+import { CreateCategoryDec } from './decorators/create-category.decorator';
+import { FindAllCategoriesDec } from './decorators/find-all-category.decorator';
+import { FindOneCategoryDec } from './decorators/find-one-category.decorator';
+import { UpdateCategoryDec } from './decorators/update-category.decorator';
+import { RemoveCategoryDec } from './decorators/remove-category.decorator';
 
 @ApiTags('Categories')
 @Controller('categories')
@@ -31,25 +29,25 @@ export class CategoryController {
   constructor(private readonly categoryService: CategoryService) {}
 
   @Post()
-  // @CreateCategoryDec()
+  @CreateCategoryDec()
   create(@GetUser() user: User, @Body() createCategoryDto: CreateCategoryDto) {
     return this.categoryService.create(user.id, createCategoryDto);
   }
 
   @Get()
-  // @FindAllCategoriesDec()
+  @FindAllCategoriesDec()
   findAll(@GetUser() user: User) {
     return this.categoryService.findAll(user.id);
   }
 
   @Get(':id')
-  // @FindOneCategoryDec()
+  @FindOneCategoryDec()
   findOne(@Param('id') id: string, @GetUser() user: User) {
     return this.categoryService.findOne(id, user.id);
   }
 
   @Patch(':id')
-  // @UpdateCategoryDec()
+  @UpdateCategoryDec()
   update(
     @Param('id') id: string,
     @GetUser() user: User,
@@ -59,7 +57,7 @@ export class CategoryController {
   }
 
   @Delete(':id')
-  // @RemoveCategoryDec()
+  @RemoveCategoryDec()
   remove(@Param('id') id: string, @GetUser() user: User) {
     return this.categoryService.remove(id, user.id);
   }

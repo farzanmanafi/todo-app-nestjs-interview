@@ -10,7 +10,6 @@ import { JwtStrategy } from './strategies/jwt.strategy';
 
 import { User } from '../users/entities/user.entity';
 import { RefreshToken } from './entities/refresh-token.entity';
-import { PasswordReset } from './entities/password-reset.entity';
 import { UsersModule } from '../users/users.module';
 import { jwtConfig } from '../config/jwt.config';
 
@@ -28,7 +27,7 @@ import { jwtConfig } from '../config/jwt.config';
       }),
       inject: [ConfigService],
     }),
-    TypeOrmModule.forFeature([User, RefreshToken, PasswordReset]),
+    TypeOrmModule.forFeature([User, RefreshToken]),
     UsersModule,
   ],
   controllers: [AuthController],
