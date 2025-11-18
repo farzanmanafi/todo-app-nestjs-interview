@@ -12,13 +12,11 @@ import { NotificationService } from './notification.service';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 import { GetUser } from '../auth/decorators/get-user.decorator';
 import { User } from '../users/entities/user.entity';
-import {
-  FindAllNotificationsDec,
-  FindUnreadNotificationsDec,
-  MarkAsReadDec,
-  MarkAllAsReadDec,
-  RemoveNotificationDec,
-} from './decorators/notification.decorators';
+import { FindAllNotificationsDec } from './decorators/find-all-notification.decorator';
+import { FindUnreadNotificationsDec } from './decorators/find-Unread-notification.decorator';
+import { MarkAsReadDec } from './decorators/mark-as-read.decorator';
+import { MarkAllAsReadDec } from './decorators/mark-all-as-read.decorator';
+import { RemoveNotificationDec } from './decorators/remove-notification.decorator';
 
 @ApiTags('Notifications')
 @Controller('notifications')
