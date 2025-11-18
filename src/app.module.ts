@@ -12,7 +12,7 @@ import type { RedisClientOptions } from 'redis';
 // Module imports
 import { AuthModule } from './domain/auth/auth.module';
 import { UsersModule } from './domain/users/users.module';
-// import { CategoryModule } from './domain/category/category.module';
+import { CategoryModule } from './domain/category/category.module';
 // import { TodoModule } from './domain/todo/todo.module';
 
 @Module({
@@ -108,7 +108,7 @@ import { UsersModule } from './domain/users/users.module';
     // Domain Modules
     AuthModule,
     UsersModule,
-    // CategoryModule,
+    CategoryModule,
     // TodoModule,
   ],
   controllers: [],

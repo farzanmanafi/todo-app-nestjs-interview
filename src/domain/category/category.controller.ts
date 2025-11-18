@@ -24,7 +24,7 @@ import { RemoveCategoryDec } from './decorators/remove-category.decorator';
 @ApiTags('Categories')
 @Controller('categories')
 @UseGuards(JwtAuthGuard)
-@ApiBearerAuth()
+@ApiBearerAuth('JWT-auth')
 export class CategoryController {
   constructor(private readonly categoryService: CategoryService) {}
 
