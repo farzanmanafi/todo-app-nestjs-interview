@@ -46,7 +46,7 @@ export class Todo {
     enum: TodoStatus,
     default: TodoStatus.PENDING,
   })
-  @Index()
+  // @Index()
   status: TodoStatus;
 
   @Column({
@@ -58,7 +58,7 @@ export class Todo {
   priority: TodoPriority;
 
   @Column({ type: 'timestamp', nullable: true })
-  @Index()
+  // @Index()
   dueDate: Date;
 
   @Column({ type: 'timestamp', nullable: true })
@@ -71,11 +71,11 @@ export class Todo {
   tags: string[];
 
   @Column()
-  @Index()
+  // @Index()
   userId: string;
 
   @Column({ nullable: true })
-  @Index()
+  // @Index()
   categoryId: string;
 
   @CreateDateColumn()

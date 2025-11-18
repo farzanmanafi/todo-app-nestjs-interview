@@ -12,7 +12,7 @@ import { CACHE_MANAGER } from '@nestjs/cache-manager';
 import { Cache } from 'cache-manager';
 import { EventEmitter2 } from '@nestjs/event-emitter';
 
-import { Todo, TodoStatus } from './entities/todo.entity';
+import { Todo, TodoPriority, TodoStatus } from './entities/todo.entity';
 import { CreateTodoDto } from './dto/create-todo.dto';
 import { UpdateTodoDto } from './dto/update-todo.dto';
 import { QueryTodoDto } from './dto/query-todo.dto';
@@ -41,7 +41,7 @@ export class TodoService {
     userId: string,
     createTodoDto: CreateTodoDto,
   ): Promise<TodoResponseDto> {
-    const { categoryId, dueDate, ...rest } = createTodoDto;
+    const { categoryId, dueDate } = createTodoDto;
 
     // Validate category ownership if provided
     if (categoryId) {
@@ -54,13 +54,16 @@ export class TodoService {
       }
     }
 
-    // Create todo
     const todo = this.todoRepository.create({
-      ...rest,
+      title: createTodoDto.title,
+      description: createTodoDto.description,
+      status: createTodoDto.status || TodoStatus.PENDING,
+      priority: createTodoDto.priority || TodoPriority.MEDIUM,
+      tags: createTodoDto.tags,
       userId,
       categoryId: categoryId || null,
       dueDate: dueDate ? new Date(dueDate) : null,
-    });
+    } as Todo);
 
     const savedTodo = await this.todoRepository.save(todo);
 
@@ -358,6 +361,7 @@ export class TodoService {
     return this.todoRepository.find({
       where: {
         status: TodoStatus.COMPLETED,
+        completedAt: Between(new Date(0), thirtyDaysAgo),
       },
       withDeleted: false,
     });
